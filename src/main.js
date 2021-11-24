@@ -6,15 +6,23 @@ import {createEventsListTemplate} from './view/site-events-list';
 import {createAddPointFormTemplate} from './view/site-add-point-form-view';
 import {createEditPointFormTemplate} from './view/site-edit-point-form-view';
 import {createEventsItemTemplate} from './view/site-events-item';
-import {renderTemplate, RenderPosition} from './render';
 
 const WAYPOINT_COUNT = 3;
+const RenderPosition = {
+  BEFOREBEGIN: 'beforebegin',
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+  AFTEREND: 'afterend',
+};
 const tripMainElement = document.querySelector('.trip-main');
 const tripNavigationElement = tripMainElement.querySelector('.trip-controls__navigation');
 const tripFiltersElement = tripMainElement.querySelector('.trip-controls__filters');
 const pageMainElement = document.querySelector('.page-main');
 const tripEventsElement = pageMainElement.querySelector('.trip-events');
 
+const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
 
 renderTemplate(tripMainElement, createSiteInfoTemplate(), RenderPosition.AFTERBEGIN);
 renderTemplate(tripNavigationElement, createNavigationTemplate(), RenderPosition.BEFOREEND);
