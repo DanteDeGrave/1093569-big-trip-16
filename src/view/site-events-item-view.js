@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
+import {createElement} from '../render';
 
-export const createEventsItemTemplate = (point) => {
+const createEventsItemTemplate = (point) => {
   const {dueDate, price, wayPointType, timeStart, timeEnd, destination, offer, isFavorite} = point;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
   const timeDifference = dayjs(timeEnd).diff(timeStart, 'second');
@@ -64,3 +65,27 @@ export const createEventsItemTemplate = (point) => {
     </li>
   `;
 };
+
+export default class SiteEventsItemView {
+  #element = null;
+  #points = null;
+
+  constructor(points) {
+    this.#points = points;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template() {
+    return createEventsItemTemplate(this.#points);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

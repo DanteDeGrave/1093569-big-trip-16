@@ -1,23 +1,36 @@
 import dayjs from 'dayjs';
+import {createElement} from '../render';
 
-export const createEditPointFormTemplate = (point = {}) => {
-  const {
-    price='',
-    wayPointType = '',
-    wayPointTypes = '',
-    cities ='',
-    timeStart = '',
-    timeEnd = '',
-    destination = {
-      name: '',
-      destinationInfo: '',
-      pictures: '',
-    },
-    offer = {
-      type: '',
-      offers: '',
-    },
-  } = point;
+const BLANK_POINT = {
+  price: '',
+  wayPointType: '',
+  wayPointTypes: '',
+  cities: '',
+  timeStart: '',
+  timeEnd: '',
+  destination: {
+    name: '',
+    destinationInfo: '',
+    pictures: [],
+  },
+  offer: {
+    type: '',
+    offers: [],
+  },
+};
+
+const createEditPointFormTemplate = (point) => {
+  const { price, wayPointType, wayPointTypes, cities, timeStart, timeEnd, destination, offer } = point;
+  const isAddForm = price === '';
+  const resetBtnText = isAddForm ? 'Cancel' : 'Delete';
+  const getCloseEditFormBtn = () => {
+    if (isAddForm) { return; }
+    return `
+      <button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>
+    `;
+  };
   const getOffersList = () => {
     if (!offer.offers.length) {
       return '';
@@ -32,7 +45,7 @@ export const createEditPointFormTemplate = (point = {}) => {
            </label>
        </div>
       `).join('');
-    return`
+    return `
       <section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
@@ -41,7 +54,7 @@ export const createEditPointFormTemplate = (point = {}) => {
           </section>
     `;
   };
-  const getTypeList = () =>  wayPointTypes.map((element) => `
+  const getTypeList = () => wayPointTypes.map((element) => `
       <div class="event__type-item">
         <input id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}">
         <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
@@ -121,7 +134,8 @@ export const createEditPointFormTemplate = (point = {}) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
+          <button class="event__reset-btn" type="reset">${resetBtnText}</button>
+          ${getCloseEditFormBtn()}
         </header>
         <section class="event__details">
           ${getOffersList()}
@@ -131,3 +145,27 @@ export const createEditPointFormTemplate = (point = {}) => {
     </li>
   `;
 };
+
+export default class SiteEditPointFormView {
+  #element = null;
+  #points = null;
+
+  constructor(points = BLANK_POINT) {
+    this.#points = points;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template() {
+    return createEditPointFormTemplate(this.#points);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

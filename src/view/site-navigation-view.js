@@ -1,4 +1,6 @@
-export const createNavigationTemplate = () => (
+import {createElement} from '../render';
+
+const createNavigationTemplate = () => (
   `
     <nav class="trip-controls__trip-tabs  trip-tabs">
       <a class="trip-tabs__btn  trip-tabs__btn--active" href="#">Table</a>
@@ -6,3 +8,22 @@ export const createNavigationTemplate = () => (
     </nav>
   `
 );
+
+export default class SiteNavigationView {
+  #element = null;
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+    return this.#element;
+  }
+
+  get template() {
+    return createNavigationTemplate();
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
