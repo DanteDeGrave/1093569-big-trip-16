@@ -62,7 +62,9 @@ if (points.length) {
   };
 
   const eventsListComponent = new SiteEventsListView();
+
   render(tripEventsElement, eventsListComponent.element, RenderPosition.BEFOREEND);
+
   for (let i = 0; i < points.length; i++) {
     renderPoint(eventsListComponent.element, points[i]);
   }
