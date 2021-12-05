@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from './abstract-view';
 
 const createFiltersTemplate = () => (
   `
@@ -20,21 +20,8 @@ const createFiltersTemplate = () => (
   `
 );
 
-export default class SiteFiltersView {
-  #element = null;
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
+export default class SiteFiltersView extends AbstractView {
   get template() {
     return createFiltersTemplate();
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

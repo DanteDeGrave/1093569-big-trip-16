@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from './abstract-view';
 
 const createSiteSortFormTemplate = () => (
   `
@@ -27,21 +27,8 @@ const createSiteSortFormTemplate = () => (
   `
 );
 
-export default class SiteSortFormView {
-  #element = null;
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
+export default class SiteSortFormView extends AbstractView {
   get template() {
     return createSiteSortFormTemplate();
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

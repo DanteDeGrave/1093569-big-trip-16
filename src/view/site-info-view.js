@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from './abstract-view';
 
 const createSiteInfoTemplate = (points) => {
   const amountTrip = points.reduce((acc, element) =>  acc + element.price, 0);
@@ -15,26 +15,15 @@ const createSiteInfoTemplate = (points) => {
   `;
 };
 
-export default class SiteInfoView {
-  #element = null;
+export default class SiteInfoView extends AbstractView {
   #points = null;
 
   constructor(points) {
+    super();
     this.#points = points;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template() {
     return createSiteInfoTemplate(this.#points);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../render';
+import SiteEventsItemView from './site-events-item-view';
 
 const BLANK_POINT = {
   price: '',
@@ -145,26 +145,22 @@ const createEditPointFormTemplate = (point) => {
   `;
 };
 
-export default class SiteEditPointFormView {
-  #element = null;
-  #points = null;
-
+export default class SiteEditPointFormView extends SiteEventsItemView {
   constructor(points = BLANK_POINT) {
-    this.#points = points;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
+    super(points);
   }
 
   get template() {
-    return createEditPointFormTemplate(this.#points);
+    return createEditPointFormTemplate(this._points);
   }
 
-  removeElement() {
-    this.#element = null;
+  setEditSubmitHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#editSubmitHandler);
+  }
+
+  #editSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 }
