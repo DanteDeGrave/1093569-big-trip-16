@@ -21,10 +21,9 @@ const BLANK_POINT = {
 
 const createEditPointFormTemplate = (point) => {
   const { price, wayPointType, wayPointTypes, cities, timeStart, timeEnd, destination, offer } = point;
-  const isAddForm = price === '';
-  const resetBtnText = isAddForm ? 'Cancel' : 'Delete';
+  const resetBtnText = price ? 'Delete' : 'Cancel';
   const getCloseEditFormBtn = () => {
-    if (isAddForm) { return; }
+    if (!price) { return; }
     return `
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
