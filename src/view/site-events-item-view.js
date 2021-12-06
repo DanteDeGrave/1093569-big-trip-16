@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../render';
+import AbstractView from './abstract-view';
 
 const createEventsItemTemplate = (point) => {
   const {dueDate, price, wayPointType, timeStart, timeEnd, destination, offer, isFavorite} = point;
@@ -66,26 +66,25 @@ const createEventsItemTemplate = (point) => {
   `;
 };
 
-export default class SiteEventsItemView {
-  #element = null;
-  #points = null;
+export default class SiteEventsItemView extends AbstractView {
+  _points = null;
 
   constructor(points) {
-    this.#points = points;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
+    super();
+    this._points = points;
   }
 
   get template() {
-    return createEventsItemTemplate(this.#points);
+    return createEventsItemTemplate(this._points);
   }
 
-  removeElement() {
-    this.#element = null;
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  }
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 }

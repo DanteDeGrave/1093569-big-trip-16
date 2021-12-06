@@ -1,4 +1,4 @@
-import {createElement} from '../render';
+import AbstractView from './abstract-view';
 
 const createEventsListTemplate = () => (
   `
@@ -6,21 +6,8 @@ const createEventsListTemplate = () => (
   `
 );
 
-export default class SiteEventsListView {
-  #element = null;
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
+export default class SiteEventsListView extends AbstractView {
   get template() {
     return createEventsListTemplate();
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
