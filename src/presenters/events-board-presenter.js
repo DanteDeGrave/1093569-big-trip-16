@@ -1,9 +1,8 @@
-import {RenderPosition, render, replace} from '../utils/render';
+import {RenderPosition, render} from '../utils/render';
 import SiteSortFormView from '../view/site-sort-form-view';
 import SiteEventsListView from '../view/site-events-list-view';
-import SiteEditPointFormView from '../view/site-edit-point-form-view';
-import SiteEventsItemView from '../view/site-events-item-view';
 import SiteListEmptyView from '../view/site-list-empty-view';
+import EventPresenter from './event-presenter';
 
 export default class EventsBoardPresenter {
   #eventContainer = null;
@@ -26,41 +25,8 @@ export default class EventsBoardPresenter {
   }
 
   #renderPoint = (point) => {
-    const pointComponent = new SiteEventsItemView(point);
-    const pointEditComponent = new SiteEditPointFormView(point);
-
-    const replaceCardToForm = () => {
-      replace(pointEditComponent, pointComponent);
-    };
-
-    const replaceFormToCard = () => {
-      replace(pointComponent, pointEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormToCard();
-      }
-      document.removeEventListener('keydown', onEscKeyDown);
-    };
-
-    pointComponent.setEditHandler(() => {
-      replaceCardToForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    pointEditComponent.setEditHandler(() => {
-      replaceFormToCard();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    pointEditComponent.setSubmitHandler(() => {
-      replaceFormToCard();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    render(this.#eventsListComponent, pointComponent, RenderPosition.BEFOREEND);
+    const eventPresenter = new EventPresenter(this.#eventsListComponent);
+    eventPresenter.init(point);
   }
 
   #renderPointsList = () => {
