@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 
 const MIN_COUNT = 1;
 const MAX_COUNT = 5;
@@ -73,6 +74,7 @@ export const generateWaypoint = () => {
   const dueDate = generateDate();
   const type =  getRandomArrayElement(wayPointTypes);
   return {
+    id: nanoid(),
     dueDate,
     price: getRandomIntNumber(20, 200),
     wayPointType: type,
