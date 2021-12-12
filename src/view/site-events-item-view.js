@@ -78,12 +78,12 @@ export default class SiteEventsItemView extends AbstractView {
     return createEventsItemTemplate(this._points);
   }
 
-  setEditClickHandler = (callback) => {
+  setEditHandler = (callback) => {
     this._callback.editClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editHandler);
   }
 
-  #editClickHandler = (evt) => {
+  #editHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
   }

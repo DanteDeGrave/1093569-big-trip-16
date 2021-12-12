@@ -5,7 +5,7 @@ import SiteEditPointFormView from '../view/site-edit-point-form-view';
 import SiteEventsItemView from '../view/site-events-item-view';
 import SiteListEmptyView from '../view/site-list-empty-view';
 
-export default class MainPresenter {
+export default class EventsBoardPresenter {
   #eventContainer = null;
   #sortComponent = new SiteSortFormView();
   #eventsListComponent = new SiteEventsListView();
@@ -18,7 +18,7 @@ export default class MainPresenter {
 
   init(points) {
     this.#points = [...points];
-    this.#renderPointsBoard();
+    this.#renderEventsBoard();
   }
 
   #renderSort = () => {
@@ -45,17 +45,17 @@ export default class MainPresenter {
       document.removeEventListener('keydown', onEscKeyDown);
     };
 
-    pointComponent.setEditClickHandler(() => {
+    pointComponent.setEditHandler(() => {
       replaceCardToForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    pointEditComponent.setEditClickHandler(() => {
+    pointEditComponent.setEditHandler(() => {
       replaceFormToCard();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    pointEditComponent.setEditSubmitHandler(() => {
+    pointEditComponent.setSubmitHandler(() => {
       replaceFormToCard();
       document.removeEventListener('keydown', onEscKeyDown);
     });
@@ -72,7 +72,7 @@ export default class MainPresenter {
     render(this.#eventContainer, this.#emptyEventsListComponent, RenderPosition.BEFOREEND);
   }
 
-  #renderPointsBoard = () => {
+  #renderEventsBoard = () => {
     if (!this.#points.length) {
       this.#renderEmptyEventList();
       return;
