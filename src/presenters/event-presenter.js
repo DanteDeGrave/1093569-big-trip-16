@@ -2,16 +2,24 @@ import SiteEventsItemView from '../view/site-events-item-view';
 import SiteEditPointFormView from '../view/site-edit-point-form-view';
 import {RenderPosition, render, replace, remove} from '../utils/render';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class EventPresenter {
   #eventsListContainer = null;
   #point = null;
   #pointComponent = null;
   #pointEditComponent = null;
   #changeData = null;
+  #changeMode = null;
+  #mode = Mode.DEFAULT;
 
-  constructor(eventsListContainer, changeData) {
+  constructor(eventsListContainer, changeData, changeMode) {
     this.#eventsListContainer = eventsListContainer;
     this.#changeData = changeData;
+    this.#changeMode = changeMode;
   }
 
   init = (point) => {
@@ -33,11 +41,11 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#eventsListContainer.element.contains(prevPointComponent.element)) {
+    if (this.#mode === 'DEFAULT') {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#eventsListContainer.element.contains(prevPointEditComponent.element)) {
+    if (this.#mode === 'EDITING') {
       replace(this.#pointEditComponent, prevPointEditComponent);
     }
 
@@ -48,6 +56,12 @@ export default class EventPresenter {
   destroy = () => {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
+  }
+
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT ) {
+      this.#replaceFormToCard();
+    }
   }
 
   #onEscKeyDown = (evt) => {
@@ -61,11 +75,14 @@ export default class EventPresenter {
   #replaceCardToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#onEscKeyDown);
+    this.#changeMode();
+    this.#mode = 'EDITING';
   }
 
   #replaceFormToCard = () => {
     replace(this.#pointComponent, this.#pointEditComponent);
     document.removeEventListener('keydown', this.#onEscKeyDown);
+    this.#mode = 'DEFAULT';
   }
 
   #handleFavoriteClick = () => {
