@@ -83,8 +83,18 @@ export default class SiteEventsItemView extends AbstractView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editHandler);
   }
 
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
+  }
+
   #editHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  }
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 }

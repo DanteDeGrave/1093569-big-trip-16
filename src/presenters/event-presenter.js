@@ -7,21 +7,26 @@ export default class EventPresenter {
   #point = null;
   #pointComponent = null;
   #pointEditComponent = null;
+  #changeData = null;
 
-  constructor(eventsListContainer) {
+  constructor(eventsListContainer, changeData) {
     this.#eventsListContainer = eventsListContainer;
+    this.#changeData = changeData;
   }
 
   init = (point) => {
+    this.#point = point;
+
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
-    this.#point = point;
+
     this.#pointComponent = new SiteEventsItemView(point);
     this.#pointEditComponent = new SiteEditPointFormView(point);
 
     this.#pointComponent.setEditHandler(this.#replaceCardToForm);
     this.#pointEditComponent.setEditHandler(this.#replaceFormToCard);
-    this.#pointEditComponent.setSubmitHandler(this.#replaceFormToCard);
+    this.#pointEditComponent.setSubmitHandler(this.#handleFormSubmit);
+    this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
 
     if(!prevPointComponent || !prevPointEditComponent) {
       render(this.#eventsListContainer, this.#pointComponent, RenderPosition.BEFOREEND);
@@ -61,5 +66,14 @@ export default class EventPresenter {
   #replaceFormToCard = () => {
     replace(this.#pointComponent, this.#pointEditComponent);
     document.removeEventListener('keydown', this.#onEscKeyDown);
+  }
+
+  #handleFavoriteClick = () => {
+    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+  }
+
+  #handleFormSubmit = (point) => {
+    this.#replaceFormToCard();
+    this.#changeData(point);
   }
 }

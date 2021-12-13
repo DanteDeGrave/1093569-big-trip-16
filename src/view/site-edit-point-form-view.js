@@ -161,6 +161,6 @@ export default class SiteEditPointFormView extends SiteEventsItemView {
 
   #submitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.editClick(this._points);
   }
 }
