@@ -41,11 +41,11 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#mode === 'DEFAULT') {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPointComponent);
     }
 
-    if (this.#mode === 'EDITING') {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
     }
 
@@ -76,13 +76,13 @@ export default class EventPresenter {
     replace(this.#pointEditComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#onEscKeyDown);
     this.#changeMode();
-    this.#mode = 'EDITING';
+    this.#mode = Mode.EDITING;
   }
 
   #replaceFormToCard = () => {
     replace(this.#pointComponent, this.#pointEditComponent);
     document.removeEventListener('keydown', this.#onEscKeyDown);
-    this.#mode = 'DEFAULT';
+    this.#mode = Mode.DEFAULT;
   }
 
   #handleFavoriteClick = () => {

@@ -1,7 +1,7 @@
 import AbstractView from './abstract-view';
 
 const createSiteInfoTemplate = (points) => {
-  const amountTrip = points.reduce((acc, {price}) =>  acc + price, 0);
+  const amountTrip = points.reduce((acc, element) =>  acc + element.price, 0);
   return`
     <section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
