@@ -35,16 +35,29 @@ export const createElement = (template) => {
 };
 
 export const replace = (newElement, oldElement) => {
-  if (newElement === null || oldElement === null) {
+  if (!newElement || !oldElement) {
     throw new Error(' не возможно изменить не существующий элемент');
   }
   const newChild = newElement instanceof AbstractView ? newElement.element : newElement;
   const oldChild = oldElement instanceof AbstractView ? oldElement.element : oldElement;
   const parent = oldChild.parentElement;
 
-  if (parent === null) {
+  if (!parent) {
     throw new Error('Родительский элемент не доступен');
   }
 
   parent.replaceChild(newChild, oldChild);
+};
+
+export const remove = (component) => {
+  if (!component) {
+    return;
+  }
+
+  if (!(component instanceof AbstractView)) {
+    throw new Error('Can remove only components');
+  }
+
+  component.element.remove();
+  component.removeElement();
 };

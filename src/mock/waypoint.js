@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
+import {getRandomIntNumber} from '../utils/common';
 
 const MIN_COUNT = 1;
 const MAX_COUNT = 5;
@@ -17,15 +19,6 @@ const destinationInfoOptions = [
 ];
 const cities = ['Paris', 'Amsterdam', 'Rome', 'Barcelona', 'Prague', 'Helsinki', 'Reykjavik'];
 const offerOptionTitles = ['Switch to comfort', 'Eat', 'Journal to read', 'One bottle water', 'Carry luggage'];
-
-const getRandomIntNumber = (min, max) => {
-  if (min <= max) {
-    min = Math.round(min);
-    max = Math.round(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-  throw new Error('Минимальное значение должно быть меньше или рано максимальному');
-};
 
 const generateDate = () => {
   const MAX_DATE_GAP = 7;
@@ -73,6 +66,7 @@ export const generateWaypoint = () => {
   const dueDate = generateDate();
   const type =  getRandomArrayElement(wayPointTypes);
   return {
+    id: nanoid(),
     dueDate,
     price: getRandomIntNumber(20, 200),
     wayPointType: type,

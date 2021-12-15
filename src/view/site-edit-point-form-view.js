@@ -154,13 +154,13 @@ export default class SiteEditPointFormView extends SiteEventsItemView {
     return createEditPointFormTemplate(this._points);
   }
 
-  setEditSubmitHandler = (callback) => {
+  setSubmitHandler = (callback) => {
     this._callback.editClick = callback;
-    this.element.querySelector('form').addEventListener('submit', this.#editSubmitHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
   }
 
-  #editSubmitHandler = (evt) => {
+  #submitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.editClick(this._points);
   }
 }
