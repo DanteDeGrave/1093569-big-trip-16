@@ -1,10 +1,11 @@
 import AbstractView from './abstract-view';
+import {SortType} from '../const';
 
 const createSiteSortFormTemplate = () => (
   `
     <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       <div class="trip-sort__item  trip-sort__item--day">
-        <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" checked>
+        <input id="${SortType.DAY}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" checked>
         <label class="trip-sort__btn" for="sort-day">Day</label>
       </div>
       <div class="trip-sort__item  trip-sort__item--event">
@@ -12,11 +13,11 @@ const createSiteSortFormTemplate = () => (
         <label class="trip-sort__btn" for="sort-event">Event</label>
       </div>
       <div class="trip-sort__item  trip-sort__item--time">
-        <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time">
+        <input id="${SortType.TIME}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time">
         <label class="trip-sort__btn" for="sort-time">Time</label>
       </div>
       <div class="trip-sort__item  trip-sort__item--price">
-        <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price">
+        <input id="${SortType.PRICE}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price">
         <label class="trip-sort__btn" for="sort-price">Price</label>
       </div>
       <div class="trip-sort__item  trip-sort__item--offer">
@@ -30,5 +31,18 @@ const createSiteSortFormTemplate = () => (
 export default class SiteSortFormView extends AbstractView {
   get template() {
     return createSiteSortFormTemplate();
+  }
+
+  setSortTypeChangeHandler = (callback) => {
+    this._callback.sortTypeChange = callback;
+    this.element.addEventListener('change', this.#sortTypeChangeHandler);
+  }
+
+  #sortTypeChangeHandler = (evt) => {
+    const target = evt.target;
+    if (!target.classList.contains('trip-sort__input')) {
+      return;
+    }
+    this._callback.sortTypeChange(target.id);
   }
 }
