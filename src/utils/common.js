@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const getRandomIntNumber = (min, max) => {
   if (min <= max) {
     min = Math.round(min);
@@ -20,3 +22,7 @@ export const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
+
+export const sortByDay = (a, b) =>  dayjs().diff(b.dueDate, 'second') - dayjs().diff(a.dueDate, 'second');
+export const sortByTime = (a, b) =>  dayjs(b.timeEnd).diff(b.timeStart, 'second') - dayjs(a.timeEnd).diff(a.timeStart, 'second');
+export const sortByPrice = (a, b) =>  b.price - a.price;
