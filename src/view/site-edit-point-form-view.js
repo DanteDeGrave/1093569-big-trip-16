@@ -1,10 +1,8 @@
 import dayjs from 'dayjs';
-import SiteEventsItemView from './site-events-item-view';
+import SmartView from './smart-view';
 
 const BLANK_POINT = {
   price: '',
-  wayPointType: '',
-  wayPointTypes: '',
   cities: '',
   timeStart: '',
   timeEnd: '',
@@ -17,10 +15,11 @@ const BLANK_POINT = {
     type: '',
     offers: [],
   },
+  offersList: [],
 };
 
 const createEditPointFormTemplate = (point) => {
-  const { price, wayPointType, wayPointTypes, cities, timeStart, timeEnd, destination, offer } = point;
+  const { price, cities, timeStart, timeEnd, destination, offer, offersList } = point;
   const resetBtnText = price ? 'Delete' : 'Cancel';
   const getCloseEditFormBtn = () => {
     if (!price) { return; }
@@ -36,7 +35,7 @@ const createEditPointFormTemplate = (point) => {
     }
     const offerItem = offer.offers.map((element) =>
       `<div class="event__offer-selector">
-         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${element.isChecked ? 'checked' : ''}>
+         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${element.title.toLowerCase()}-1" type="checkbox" name="event-offer-luggage" ${element.isChecked ? 'checked' : ''}>
            <label class="event__offer-label" for="event-offer-${element.title.toLowerCase()}-1">
              <span class="event__offer-title">${element.title}</span>
              &plus;&euro;&nbsp;
@@ -53,10 +52,10 @@ const createEditPointFormTemplate = (point) => {
           </section>
     `;
   };
-  const getTypeList = () => wayPointTypes.map((element) => `
+  const getTypeList = () => offersList.map((element) => `
       <div class="event__type-item">
-        <input id="event-type-${element.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.toLowerCase()}">
-        <label class="event__type-label  event__type-label--${element.toLowerCase()}" for="event-type-${element.toLowerCase()}-1">${element}</label>
+        <input id="event-type-${element.type.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${element.type.toLowerCase()}">
+        <label class="event__type-label  event__type-label--${element.type.toLowerCase()}" for="event-type-${element.type.toLowerCase()}-1">${element.type}</label>
       </div>
     `).join('');
   const getCitiesList = () => cities.map((element) => `
@@ -94,7 +93,7 @@ const createEditPointFormTemplate = (point) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${wayPointType.toLowerCase()}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${offer.type.toLowerCase()}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -108,7 +107,7 @@ const createEditPointFormTemplate = (point) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${wayPointType}
+              ${offer.type}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
             <datalist id="destination-list-1">
@@ -145,22 +144,67 @@ const createEditPointFormTemplate = (point) => {
   `;
 };
 
-export default class SiteEditPointFormView extends SiteEventsItemView {
-  constructor(points = BLANK_POINT) {
-    super(points);
+export default class SiteEditPointFormView extends SmartView {
+
+  constructor(point = BLANK_POINT) {
+    super();
+    this._data = SiteEditPointFormView.parsePointToData(point);
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createEditPointFormTemplate(this._points);
+    return createEditPointFormTemplate(this._data);
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setSubmitHandler(this._callback.editSubmit);
+    this.setEditHandler(this._callback.editClick);
+  }
+
+  reset = (point) => {
+    this.updateData(SiteEditPointFormView.parsePointToData(point));
+  }
+
+  setEditHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editHandler);
   }
 
   setSubmitHandler = (callback) => {
-    this._callback.editClick = callback;
+    this._callback.editSubmit = callback;
     this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
+  }
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#cityChangeHandler);
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#typeChangeHandler);
+  }
+
+  #cityChangeHandler = (evt) => {
+    const city = this._data.destinationsList.find(({name}) => name.toLowerCase() === evt.target.value.toLowerCase());
+    if (!city) {
+      return;
+    }
+    this.updateData({destination: city});
+  }
+
+  #typeChangeHandler = (evt) => {
+    const newOffer = this._data.offersList.find(({type}) => type.toLowerCase() === evt.target.value.toLowerCase());
+    this.updateData({offer: newOffer});
+  }
+
+  #editHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
   #submitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.editClick(this._points);
+    this._callback.editSubmit(SiteEditPointFormView.parseDataToPoints(this._data));
   }
+
+  // Заготовка на будуще, если не пригодиться - удалить
+  static parsePointToData = (point) => ({...point});
+  static parseDataToPoints = (data) => ({...data});
 }

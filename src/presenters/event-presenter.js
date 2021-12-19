@@ -32,7 +32,7 @@ export default class EventPresenter {
     this.#pointEditComponent = new SiteEditPointFormView(point);
 
     this.#pointComponent.setEditHandler(this.#replaceCardToForm);
-    this.#pointEditComponent.setEditHandler(this.#replaceFormToCard);
+    this.#pointEditComponent.setEditHandler(this.#onEditFormArrowClick);
     this.#pointEditComponent.setSubmitHandler(this.#handleFormSubmit);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
 
@@ -60,6 +60,7 @@ export default class EventPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT ) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToCard();
     }
   }
@@ -67,9 +68,15 @@ export default class EventPresenter {
   #onEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToCard();
     }
     document.removeEventListener('keydown', this.#onEscKeyDown);
+  }
+
+  #onEditFormArrowClick = () => {
+    this.#pointEditComponent.reset(this.#point);
+    this.#replaceFormToCard();
   }
 
   #replaceCardToForm = () => {

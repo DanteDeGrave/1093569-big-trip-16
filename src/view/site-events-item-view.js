@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import AbstractView from './abstract-view';
 
 const createEventsItemTemplate = (point) => {
-  const {dueDate, price, wayPointType, timeStart, timeEnd, destination, offer, isFavorite} = point;
+  const {dueDate, price, timeStart, timeEnd, destination, offer, isFavorite} = point;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
   const timeDifference = dayjs(timeEnd).diff(timeStart, 'second');
   const elapsedTime = {
@@ -36,9 +36,9 @@ const createEventsItemTemplate = (point) => {
       <div class="event">
         <time class="event__date" datetime="${dayjs(dueDate).format('YYYY-MM-D')}">${dayjs(dueDate).format('MMM D')}</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${wayPointType.toLowerCase()}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${offer.type.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${wayPointType} ${destination.name}</h3>
+        <h3 class="event__title">${offer.type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dayjs(timeStart).format('YYYY-MM-DDTHH:mm')}">${dayjs(timeStart).format('HH:mm')}</time>
@@ -67,15 +67,15 @@ const createEventsItemTemplate = (point) => {
 };
 
 export default class SiteEventsItemView extends AbstractView {
-  _points = null;
+  #points = null;
 
   constructor(points) {
     super();
-    this._points = points;
+    this.#points = points;
   }
 
   get template() {
-    return createEventsItemTemplate(this._points);
+    return createEventsItemTemplate(this.#points);
   }
 
   setEditHandler = (callback) => {
