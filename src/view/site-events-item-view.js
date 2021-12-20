@@ -1,27 +1,28 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 import AbstractView from './abstract-view';
+dayjs.extend(duration);
 
 const createEventsItemTemplate = (point) => {
   const {dueDate, price, timeStart, timeEnd, destination, offer, isFavorite} = point;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
-  const timeDifference = dayjs(timeEnd).diff(timeStart, 'second');
-  const elapsedTime = {
-    day: Math.round(timeDifference / 60 / 60 / 24),
-    hour: Math.round(timeDifference / 60 / 60 % 24),
-    minute: Math.round(timeDifference / 60 % 60),
-  };
-
-  const getElapsedTimeString = () => {
+  const getElapsedTime = () => {
+    const timeDifference = dayjs(timeEnd).diff(timeStart, 'millisecond');
+    const elapsedTime = {
+      day: Number(dayjs.duration(timeDifference).format('D')),
+      hour: Number(dayjs.duration(timeDifference).format('H')),
+      minute: Number(dayjs.duration(timeDifference).format('m')),
+    };
     const day = elapsedTime.day < 10 ? `0${elapsedTime.day}D`: `${elapsedTime.day}D`;
     const hour = elapsedTime.hour < 10 ? `0${elapsedTime.hour}H`: `${elapsedTime.hour}H`;
     const minute = elapsedTime.minute < 10 ? `0${elapsedTime.minute}M`: `${elapsedTime.minute}M`;
     if (elapsedTime.day) {
-      return `${day} ${hour} ${minute} `;
+      return `${day} ${hour} ${minute}`;
     }
     if (elapsedTime.hour) {
-      return `${hour} ${minute} `;
+      return `${hour} ${minute}`;
     }
-    return `${minute} `;
+    return `${minute}`;
   };
   const getOffersList = (offerData) => offerData.offers.map((element) => `
     <li class="event__offer">
@@ -45,7 +46,7 @@ const createEventsItemTemplate = (point) => {
             &mdash;
             <time class="event__end-time" datetime="${dayjs(timeEnd).format('YYYY-MM-DDTHH:mm')}">${dayjs(timeEnd).format('HH:mm')}</time>
           </p>
-          <p class="event__duration">${getElapsedTimeString()}</p>
+          <p class="event__duration">${getElapsedTime()}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>

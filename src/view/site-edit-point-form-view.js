@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
 import SmartView from './smart-view';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   price: '',
@@ -145,11 +148,15 @@ const createEditPointFormTemplate = (point) => {
 };
 
 export default class SiteEditPointFormView extends SmartView {
+  #datepickerStartTime = null;
+  #datepickerEndTime = null;
 
   constructor(point = BLANK_POINT) {
     super();
     this._data = SiteEditPointFormView.parsePointToData(point);
     this.#setInnerHandlers();
+    this.#setDatepickerStartTime();
+    this.#setDatepickerEndTime();
   }
 
   get template() {
@@ -160,6 +167,21 @@ export default class SiteEditPointFormView extends SmartView {
     this.#setInnerHandlers();
     this.setSubmitHandler(this._callback.editSubmit);
     this.setEditHandler(this._callback.editClick);
+    this.#setDatepickerStartTime();
+    this.#setDatepickerEndTime();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if(this.#datepickerStartTime) {
+      this.#datepickerStartTime.destroy();
+      this.#datepickerStartTime = null;
+    }
+    if(this.#datepickerEndTime) {
+      this.#datepickerEndTime.destroy();
+      this.#datepickerEndTime = null;
+    }
   }
 
   reset = (point) => {
@@ -174,6 +196,43 @@ export default class SiteEditPointFormView extends SmartView {
   setSubmitHandler = (callback) => {
     this._callback.editSubmit = callback;
     this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
+  }
+
+  #setDatepickerStartTime = () => {
+    this.#datepickerStartTime = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'y/m/d H:i',
+        defaultDate: this._data.timeStart,
+        onChange: this.#startTimeChangeHandler,
+      }
+    );
+  }
+
+  #setDatepickerEndTime = () => {
+    this.#datepickerEndTime = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'y/m/d H:i',
+        defaultDate: this._data.timeEnd,
+        minDate: this._data.timeStart,
+        onChange: this.#endTimeChangeHandler,
+      }
+    );
+  }
+
+  #startTimeChangeHandler = ([userDate]) => {
+    this.updateData({
+      timeStart: userDate,
+    });
+  }
+
+  #endTimeChangeHandler = ([userDate]) => {
+    this.updateData({
+      timeEnd: userDate,
+    });
   }
 
   #setInnerHandlers = () => {
