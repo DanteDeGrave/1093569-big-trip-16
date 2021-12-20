@@ -55,10 +55,7 @@ const getGenerateOffer = (editOffer) => {
   });
 };
 
-const getRandomOffers = (editOffer) => {
-  const offer = getGenerateOffer(editOffer);
-  return Array.from({length: getRandomIntNumber(0, MAX_COUNT)}, () => offer());
-};
+const getRandomOffers = (editOffer) => Array.from({length: getRandomIntNumber(0, MAX_COUNT)}, getGenerateOffer(editOffer));
 
 const getRandomPictures = () => Array.from({length: getRandomIntNumber(MIN_COUNT, MAX_COUNT)}, () => `img/photos/${getRandomIntNumber(MIN_COUNT, MAX_COUNT)}.jpg`);
 
