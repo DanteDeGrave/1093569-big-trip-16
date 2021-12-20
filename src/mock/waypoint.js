@@ -45,32 +45,38 @@ const getRandomDestinationInfo = (count) => {
   return arr;
 };
 
-const getGenerateOffer = () => {
+const getGenerateOffer = (editOffer) => {
   let id = 1;
   return () => ({
     id: id++,
     title:offerOptionTitles[getRandomIntNumber(0, offerOptionTitles.length - 1)],
     price: getRandomIntNumber(1, 100),
-    isChecked: Boolean(getRandomIntNumber(0, 1)),
+    isChecked: editOffer? false : Boolean(getRandomIntNumber(0, 1)),
   });
 };
 
-const getRandomOffers = () => {
-  const offer = getGenerateOffer();
-  return Array.from({length: getRandomIntNumber(0, MAX_COUNT)}, () => offer());
-};
+const getRandomOffers = (editOffer) => Array.from({length: getRandomIntNumber(0, MAX_COUNT)}, getGenerateOffer(editOffer));
 
 const getRandomPictures = () => Array.from({length: getRandomIntNumber(MIN_COUNT, MAX_COUNT)}, () => `img/photos/${getRandomIntNumber(MIN_COUNT, MAX_COUNT)}.jpg`);
 
+const getDestinationsList = () => cities.map((element) => ({
+  name: element,
+  destinationInfo: getRandomDestinationInfo(getRandomIntNumber(MIN_COUNT, MAX_COUNT)),
+  pictures: getRandomPictures(),
+}));
+
+const getOffersList = () => wayPointTypes.map((element) => ({
+  type: element,
+  offers: getRandomOffers(true),
+}));
+
 export const generateWaypoint = () => {
   const dueDate = generateDate();
-  const type =  getRandomArrayElement(wayPointTypes);
+  const type = getRandomArrayElement(wayPointTypes);
   return {
     id: nanoid(),
     dueDate,
     price: getRandomIntNumber(20, 200),
-    wayPointType: type,
-    wayPointTypes,
     cities,
     timeStart: generateTime(getRandomIntNumber(0, MAX_COUNT * 10000)),
     timeEnd: generateTime(getRandomIntNumber(-MAX_COUNT * 1000, 0)),
@@ -79,10 +85,12 @@ export const generateWaypoint = () => {
       destinationInfo: getRandomDestinationInfo(getRandomIntNumber(MIN_COUNT, MAX_COUNT)),
       pictures: getRandomPictures(),
     },
+    destinationsList: getDestinationsList(),
     offer: {
       type,
       offers: getRandomOffers(),
     },
+    offersList: getOffersList(),
     isFavorite: Boolean(getRandomIntNumber(0, 1)),
   };
 };
