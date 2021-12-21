@@ -6,24 +6,24 @@ dayjs.extend(duration);
 const createEventsItemTemplate = (point) => {
   const {dueDate, price, timeStart, timeEnd, destination, offer, isFavorite} = point;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
+
   const getElapsedTime = () => {
     const timeDifference = dayjs(timeEnd).diff(timeStart, 'millisecond');
-    const elapsedTime = {
-      day: Number(dayjs.duration(timeDifference).format('D')),
-      hour: Number(dayjs.duration(timeDifference).format('H')),
-      minute: Number(dayjs.duration(timeDifference).format('m')),
-    };
-    const day = elapsedTime.day < 10 ? `0${elapsedTime.day}D`: `${elapsedTime.day}D`;
-    const hour = elapsedTime.hour < 10 ? `0${elapsedTime.hour}H`: `${elapsedTime.hour}H`;
-    const minute = elapsedTime.minute < 10 ? `0${elapsedTime.minute}M`: `${elapsedTime.minute}M`;
-    if (elapsedTime.day) {
-      return `${day} ${hour} ${minute}`;
+    const day = dayjs.duration(timeDifference).format('DD');
+    const hour = dayjs.duration(timeDifference).format('HH');
+    const minute = dayjs.duration(timeDifference).format('mm');
+
+    if (day > 0) {
+      return `${day}D ${hour}H ${minute}M`;
     }
-    if (elapsedTime.hour) {
-      return `${hour} ${minute}`;
+
+    if (hour > 0) {
+      return `${hour}H ${minute}M`;
     }
-    return `${minute}`;
+
+    return `${minute}M`;
   };
+
   const getOffersList = (offerData) => offerData.offers.map((element) => `
     <li class="event__offer">
       <span class="event__offer-title">${element.title}</span>
@@ -31,7 +31,9 @@ const createEventsItemTemplate = (point) => {
       <span class="event__offer-price">${element.price}</span>
     </li>
   `).join('');
+
   const offersList = getOffersList(offer);
+
   return `
     <li class="trip-events__item">
       <div class="event">
