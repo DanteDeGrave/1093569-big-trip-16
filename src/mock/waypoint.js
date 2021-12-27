@@ -65,7 +65,7 @@ const getDestinationsList = () => cities.map((element) => ({
   pictures: getRandomPictures(),
 }));
 
-const getOffersList = () => wayPointTypes.map((element) => ({
+export const generateOffersList = () => wayPointTypes.map((element) => ({
   type: element,
   offers: getRandomOffers(true),
 }));
@@ -90,7 +90,7 @@ export const generateWaypoint = () => {
       type,
       offers: getRandomOffers(),
     },
-    offersList: getOffersList(),
+    offersList: generateOffersList(),
     isFavorite: Boolean(getRandomIntNumber(0, 1)),
   };
 };

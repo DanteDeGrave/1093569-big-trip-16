@@ -7,17 +7,29 @@ import {sortByDay, sortByPrice, sortByTime, updateItem} from '../utils/common';
 import {SortType} from '../const';
 
 export default class EventsBoardPresenter {
-  #points = [];
+  #tasksModel = null;
+  #offersListModel = null;
   #eventContainer = null;
   #sortComponent = new SiteSortFormView();
   #eventsListComponent = new SiteEventsListView();
   #emptyEventsListComponent = new SiteListEmptyView();
+  #points = [];
   #eventPresenter = new Map();
   #currentSortType = SortType.DAY;
   #sourcedBoardEvents = [];
 
-  constructor(container) {
+  constructor(container, tasksModel, offersListModel) {
     this.#eventContainer = container;
+    this.#tasksModel = tasksModel;
+    this.#offersListModel = offersListModel;
+  }
+
+  get points() {
+    return this.#tasksModel.points;
+  }
+
+  get offersList() {
+    return this.#offersListModel.offers;
   }
 
   init(points) {
