@@ -18,6 +18,8 @@ export default class EventsBoardPresenter {
   constructor(container, pointsModel) {
     this.#eventContainer = container;
     this.#pointsModel = pointsModel;
+
+    this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
@@ -34,12 +36,16 @@ export default class EventsBoardPresenter {
     this.#renderEventsBoard();
   }
 
-  #handleModeChange = () => {
-    this.#eventPresenter.forEach((presenter) => presenter.resetView());
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
   }
 
-  #handlePointChange = (updatedPoint) => {
-    this.#eventPresenter.get(updatedPoint.id).init(updatedPoint);
+  #handleModelEvent = (updateType, data) => {
+    console.log(updateType, data);
+  }
+
+  #handleModeChange = () => {
+    this.#eventPresenter.forEach((presenter) => presenter.resetView());
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -54,7 +60,7 @@ export default class EventsBoardPresenter {
   }
 
   #renderPoint = (point) => {
-    const eventPresenter = new EventPresenter(this.#eventsListComponent, this.#handlePointChange, this.#handleModeChange);
+    const eventPresenter = new EventPresenter(this.#eventsListComponent, this.#handleViewAction, this.#handleModeChange);
     eventPresenter.init(point);
     this.#eventPresenter.set(point.id, eventPresenter);
   }

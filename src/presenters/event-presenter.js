@@ -1,6 +1,7 @@
 import SiteEventsItemView from '../view/site-events-item-view';
 import SiteEditPointFormView from '../view/site-edit-point-form-view';
 import {RenderPosition, render, replace, remove} from '../utils/render';
+import {UserAction, UpdateType} from '../const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -93,11 +94,19 @@ export default class EventPresenter {
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      {...this.#point, isFavorite: !this.#point.isFavorite}
+    );
   }
 
   #handleFormSubmit = (point) => {
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point
+    );
     this.#replaceFormToCard();
-    this.#changeData(point);
   }
 }
