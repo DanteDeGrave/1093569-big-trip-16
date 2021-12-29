@@ -1,4 +1,4 @@
-import {RenderPosition, render} from '../utils/render';
+import {RenderPosition, render, remove} from '../utils/render';
 import SiteSortFormView from '../view/site-sort-form-view';
 import SiteEventsListView from '../view/site-events-list-view';
 import SiteListEmptyView from '../view/site-list-empty-view';
@@ -9,7 +9,7 @@ import {SortType, UpdateType, UserAction} from '../const';
 export default class EventsBoardPresenter {
   #pointsModel = null;
   #eventContainer = null;
-  #sortComponent = new SiteSortFormView();
+  #sortComponent = null;
   #eventsListComponent = new SiteEventsListView();
   #emptyEventsListComponent = new SiteListEmptyView();
   #eventPresenter = new Map();
@@ -56,8 +56,12 @@ export default class EventsBoardPresenter {
         this.#eventPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
+        this.#clearEventsBoard();
+        this.#renderEventsBoard();
         break;
       case UpdateType.MAJOR:
+        this.#clearEventsBoard({resetSortType: true});
+        this.#renderEventsBoard();
         break;
     }
   }
@@ -68,13 +72,14 @@ export default class EventsBoardPresenter {
 
   #handleSortTypeChange = (sortType) => {
     this.#currentSortType = sortType;
-    this.#clearPointsList();
-    this.#renderPointsList();
+    this.#clearEventsBoard();
+    this.#renderEventsBoard();
   }
 
   #renderSort = () => {
-    render(this.#eventContainer, this.#sortComponent, RenderPosition.BEFOREEND);
+    this.#sortComponent = new SiteSortFormView(this.#currentSortType);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
+    render(this.#eventContainer, this.#sortComponent, RenderPosition.BEFOREEND);
   }
 
   #renderPoint = (point) => {
@@ -83,18 +88,19 @@ export default class EventsBoardPresenter {
     this.#eventPresenter.set(point.id, eventPresenter);
   }
 
-  #renderPointsList = () => {
-    render(this.#eventContainer, this.#eventsListComponent, RenderPosition.BEFOREEND);
-    this.points.forEach((point) => this.#renderPoint(point));
-  }
-
-  #clearPointsList = () => {
-    this.#eventPresenter.forEach((presenter) => presenter.destroy());
-    this.#eventPresenter.clear();
-  }
-
   #renderEmptyEventList = () => {
     render(this.#eventContainer, this.#emptyEventsListComponent, RenderPosition.BEFOREEND);
+  }
+
+  #clearEventsBoard = ({resetSortType = false} = {}) => {
+    this.#eventPresenter.forEach((presenter) => presenter.destroy());
+    this.#eventPresenter.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#emptyEventsListComponent);
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
   }
 
   #renderEventsBoard = () => {
@@ -102,7 +108,10 @@ export default class EventsBoardPresenter {
       this.#renderEmptyEventList();
       return;
     }
+
     this.#renderSort();
-    this.#renderPointsList();
+
+    render(this.#eventContainer, this.#eventsListComponent, RenderPosition.BEFOREEND);
+    this.points.forEach((point) => this.#renderPoint(point));
   }
 }

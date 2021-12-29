@@ -1,11 +1,11 @@
 import AbstractView from './abstract-view';
 import {SortType} from '../const';
 
-const createSiteSortFormTemplate = () => (
+const createSiteSortFormTemplate = (currentSortType) => (
   `
     <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       <div class="trip-sort__item  trip-sort__item--day">
-        <input id="${SortType.DAY}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" checked>
+        <input id="${SortType.DAY}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${currentSortType === SortType.DAY ? 'checked' : ''}>
         <label class="trip-sort__btn" for="sort-day">Day</label>
       </div>
       <div class="trip-sort__item  trip-sort__item--event">
@@ -13,11 +13,11 @@ const createSiteSortFormTemplate = () => (
         <label class="trip-sort__btn" for="sort-event">Event</label>
       </div>
       <div class="trip-sort__item  trip-sort__item--time">
-        <input id="${SortType.TIME}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time">
+        <input id="${SortType.TIME}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${currentSortType === SortType.TIME ? 'checked' : ''}>
         <label class="trip-sort__btn" for="sort-time">Time</label>
       </div>
       <div class="trip-sort__item  trip-sort__item--price">
-        <input id="${SortType.PRICE}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price">
+        <input id="${SortType.PRICE}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${currentSortType === SortType.PRICE ? 'checked' : ''}>
         <label class="trip-sort__btn" for="sort-price">Price</label>
       </div>
       <div class="trip-sort__item  trip-sort__item--offer">
@@ -29,8 +29,15 @@ const createSiteSortFormTemplate = () => (
 );
 
 export default class SiteSortFormView extends AbstractView {
+  #currentSortType = null;
+
+  constructor(currentSortType) {
+    super();
+    this.#currentSortType = currentSortType;
+  }
+
   get template() {
-    return createSiteSortFormTemplate();
+    return createSiteSortFormTemplate(this.#currentSortType);
   }
 
   setSortTypeChangeHandler = (callback) => {
