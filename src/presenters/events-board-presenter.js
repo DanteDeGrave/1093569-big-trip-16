@@ -4,7 +4,7 @@ import SiteEventsListView from '../view/site-events-list-view';
 import SiteListEmptyView from '../view/site-list-empty-view';
 import EventPresenter from './event-presenter';
 import {sortByDay, sortByPrice, sortByTime} from '../utils/common';
-import {SortType} from '../const';
+import {SortType, UpdateType, UserAction} from '../const';
 
 export default class EventsBoardPresenter {
   #pointsModel = null;
@@ -37,11 +37,29 @@ export default class EventsBoardPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-    console.log(actionType, updateType, update);
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.#pointsModel.deletePoint(updateType, update);
+        break;
+    }
   }
 
   #handleModelEvent = (updateType, data) => {
-    console.log(updateType, data);
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#eventPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        break;
+      case UpdateType.MAJOR:
+        break;
+    }
   }
 
   #handleModeChange = () => {
