@@ -167,6 +167,7 @@ export default class SiteEditPointFormView extends SmartView {
     this.#setInnerHandlers();
     this.setSubmitHandler(this._callback.editSubmit);
     this.setEditHandler(this._callback.editClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
     this.#setDatepickerStartTime();
     this.#setDatepickerEndTime();
   }
@@ -196,6 +197,11 @@ export default class SiteEditPointFormView extends SmartView {
   setSubmitHandler = (callback) => {
     this._callback.editSubmit = callback;
     this.element.querySelector('form').addEventListener('submit', this.#submitHandler);
+  }
+
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteHandler);
   }
 
   #setDatepickerStartTime = () => {
@@ -261,6 +267,11 @@ export default class SiteEditPointFormView extends SmartView {
   #submitHandler = (evt) => {
     evt.preventDefault();
     this._callback.editSubmit(SiteEditPointFormView.parseDataToPoints(this._data));
+  }
+
+  #deleteHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(SiteEditPointFormView.parsePointToData(this._data));
   }
 
   // Заготовка на будуще, если не пригодиться - удалить

@@ -71,14 +71,12 @@ export const generateOffersList = () => wayPointTypes.map((element) => ({
 }));
 
 export const generateWaypoint = () => {
-  const dueDate = generateDate();
   const type = getRandomArrayElement(wayPointTypes);
   return {
     id: nanoid(),
-    dueDate,
     price: getRandomIntNumber(20, 200),
     cities,
-    timeStart: generateTime(getRandomIntNumber(0, MAX_COUNT * 10000)),
+    timeStart: generateDate(),
     timeEnd: generateTime(getRandomIntNumber(-MAX_COUNT * 1000, 0)),
     destination: {
       name: getRandomArrayElement(cities),

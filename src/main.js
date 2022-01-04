@@ -14,6 +14,7 @@ pointsModel.points = points;
 const tripMainElement = document.querySelector('.trip-main');
 const tripNavigationElement = tripMainElement.querySelector('.trip-controls__navigation');
 const tripFiltersElement = tripMainElement.querySelector('.trip-controls__filters');
+
 const tripEventsElement = document.querySelector('.trip-events');
 const eventsBoardPresenter = new EventsBoardPresenter(tripEventsElement, pointsModel);
 
