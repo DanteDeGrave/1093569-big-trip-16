@@ -4,7 +4,7 @@ import AbstractView from './abstract-view';
 dayjs.extend(duration);
 
 const createEventsItemTemplate = (point) => {
-  const {price, timeStart, timeEnd, destination, offer, isFavorite} = point;
+  const {price, timeStart, timeEnd, destination, type, offer, isFavorite} = point;
   const favorite = isFavorite ? 'event__favorite-btn--active' : '';
 
   const getElapsedTime = () => {
@@ -39,9 +39,9 @@ const createEventsItemTemplate = (point) => {
       <div class="event">
         <time class="event__date" datetime="${dayjs(timeStart).format('YYYY-MM-D')}">${dayjs(timeStart).format('MMM D')}</time>
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/${offer.type.toLowerCase()}.png" alt="Event type icon">
+          <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${offer.type} ${destination.name}</h3>
+        <h3 class="event__title">${type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dayjs(timeStart).format('YYYY-MM-DDTHH:mm')}">${dayjs(timeStart).format('HH:mm')}</time>

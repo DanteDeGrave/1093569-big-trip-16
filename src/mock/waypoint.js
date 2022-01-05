@@ -80,10 +80,11 @@ export const generateWaypoint = () => {
     timeEnd: generateTime(getRandomIntNumber(-MAX_COUNT * 1000, 0)),
     destination: {
       name: getRandomArrayElement(cities),
-      destinationInfo: getRandomDestinationInfo(getRandomIntNumber(MIN_COUNT, MAX_COUNT)),
+      description: getRandomDestinationInfo(getRandomIntNumber(MIN_COUNT, MAX_COUNT)),
       pictures: getRandomPictures(),
     },
     destinationsList: getDestinationsList(),
+    type,
     offer: {
       type,
       offers: getRandomOffers(),

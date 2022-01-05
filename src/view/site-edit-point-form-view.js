@@ -11,7 +11,7 @@ const BLANK_POINT = {
   timeEnd: '',
   destination: {
     name: '',
-    destinationInfo: '',
+    description: '',
     pictures: [],
   },
   offer: {
@@ -22,7 +22,7 @@ const BLANK_POINT = {
 };
 
 const createEditPointFormTemplate = (point) => {
-  const { price, cities, timeStart, timeEnd, destination, offer, offersList } = point;
+  const { price, cities, timeStart, timeEnd, destination, type, offer, offersList } = point;
   const resetBtnText = price ? 'Delete' : 'Cancel';
   const getCloseEditFormBtn = () => {
     if (!price) { return; }
@@ -78,13 +78,13 @@ const createEditPointFormTemplate = (point) => {
     `;
   };
   const getDestination = () => {
-    if (!destination.destinationInfo.length || !destination.pictures.length) {
+    if (!destination.description.length || !destination.pictures.length) {
       return '';
     }
     return `
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        ${destination.destinationInfo.length ? `<p class="event__destination-description">${destination.destinationInfo.join(' ')}</p>` : ''}
+        ${destination.description.length ? `<p class="event__destination-description">${destination.description.join(' ')}</p>` : ''}
         ${getPhotoList()}
       </section>
     `;
@@ -96,7 +96,7 @@ const createEditPointFormTemplate = (point) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${offer.type.toLowerCase()}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -110,7 +110,7 @@ const createEditPointFormTemplate = (point) => {
 
           <div class="event__field-group  event__field-group--destination">
             <label class="event__label  event__type-output" for="event-destination-1">
-              ${offer.type}
+              ${type}
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
             <datalist id="destination-list-1">
@@ -259,6 +259,14 @@ export default class SiteEditPointFormView extends SmartView {
     this.updateData({offer: newOffer});
   }
 
+  #setPriceValue = () => {
+    const priceValue = this.element.querySelector('.event__input--price').value;
+    if (+priceValue === this._data.price) {
+      return;
+    }
+    this.updateData({price: priceValue});
+  }
+
   #editHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
@@ -266,6 +274,7 @@ export default class SiteEditPointFormView extends SmartView {
 
   #submitHandler = (evt) => {
     evt.preventDefault();
+    this.#setPriceValue();
     this._callback.editSubmit(SiteEditPointFormView.parseDataToPoints(this._data));
   }
 
