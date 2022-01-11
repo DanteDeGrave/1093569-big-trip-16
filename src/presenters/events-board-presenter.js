@@ -5,6 +5,7 @@ import SiteListEmptyView from '../view/site-list-empty-view';
 import EventPresenter from './event-presenter';
 import {sortByDay, sortByPrice, sortByTime} from '../utils/common';
 import {SortType, UpdateType, UserAction} from '../const';
+import {filter} from '../utils/filter';
 
 export default class EventsBoardPresenter {
   #pointsModel = null;
@@ -14,22 +15,28 @@ export default class EventsBoardPresenter {
   #emptyEventsListComponent = new SiteListEmptyView();
   #eventPresenter = new Map();
   #currentSortType = SortType.DAY;
+  #filterModel = null;
 
-  constructor(container, pointsModel) {
+  constructor(container, pointsModel, filterModel) {
     this.#eventContainer = container;
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
+    const filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredTasks = filter[filterType](points);
     switch (this.#currentSortType) {
       case SortType.TIME:
-        return [...this.#pointsModel.points].sort(sortByTime);
+        return filteredTasks.sort(sortByTime);
       case SortType.PRICE:
-        return [...this.#pointsModel.points].sort(sortByPrice);
+        return filteredTasks.sort(sortByPrice);
     }
-    return  [...this.#pointsModel.points].sort(sortByDay);
+    return  filteredTasks.sort(sortByDay);
   }
 
   init() {

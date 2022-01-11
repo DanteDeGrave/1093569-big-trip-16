@@ -23,7 +23,7 @@ const tripNavigationElement = tripMainElement.querySelector('.trip-controls__nav
 const tripFiltersElement = tripMainElement.querySelector('.trip-controls__filters');
 
 const tripEventsElement = document.querySelector('.trip-events');
-const eventsBoardPresenter = new EventsBoardPresenter(tripEventsElement, pointsModel);
+const eventsBoardPresenter = new EventsBoardPresenter(tripEventsElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(tripFiltersElement, filterModel);
 
 if (points.length) {

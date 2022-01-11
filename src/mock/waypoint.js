@@ -23,10 +23,10 @@ const offerOptionTitles = ['Switch to comfort', 'Eat', 'Journal to read', 'One b
 const generateDate = () => {
   const MAX_DATE_GAP = 7;
   const daysGap = getRandomIntNumber(-MAX_DATE_GAP, MAX_DATE_GAP);
-  return dayjs().add(daysGap, 'day').toDate();
+  return dayjs().add(daysGap, 'day');
 };
 
-const generateTime = (gap) =>  dayjs().subtract(gap, 'second').toISOString();
+const generateTime = (date) =>  date.add(getRandomIntNumber(0, 788645), 'second').toDate();
 
 const getRandomArrayElement = (array) => array[getRandomIntNumber(0, array.length - 1)];
 
@@ -72,12 +72,13 @@ export const generateOffersList = () => wayPointTypes.map((element) => ({
 
 export const generateWaypoint = () => {
   const type = getRandomArrayElement(wayPointTypes);
+  const timeStart = generateDate();
   return {
     id: nanoid(),
     price: getRandomIntNumber(20, 200),
     cities,
-    timeStart: generateDate(),
-    timeEnd: generateTime(getRandomIntNumber(-MAX_COUNT * 1000, 0)),
+    timeStart: timeStart.toISOString(),
+    timeEnd: generateTime(timeStart).toISOString(),
     destination: {
       name: getRandomArrayElement(cities),
       description: getRandomDestinationInfo(getRandomIntNumber(MIN_COUNT, MAX_COUNT)),

@@ -65,8 +65,8 @@ export default class PointsModel extends AbstractObservable {
     const adaptedPoint = {
       ...point,
       price: point['base_price'],
-      timeStart: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
-      timeEnd: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
+      timeStart: point['date_from'],
+      timeEnd: point['date_to'],
       isFavorite: point['is_favorite'],
     };
 
