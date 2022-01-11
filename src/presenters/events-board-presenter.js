@@ -4,7 +4,7 @@ import SiteEventsListView from '../view/site-events-list-view';
 import SiteListEmptyView from '../view/site-list-empty-view';
 import EventPresenter from './event-presenter';
 import {sortByDay, sortByPrice, sortByTime} from '../utils/common';
-import {SortType, UpdateType, UserAction} from '../const';
+import {SortType, UpdateType, UserAction, FilterType} from '../const';
 import {filter} from '../utils/filter';
 
 export default class EventsBoardPresenter {
@@ -12,10 +12,11 @@ export default class EventsBoardPresenter {
   #eventContainer = null;
   #sortComponent = null;
   #eventsListComponent = new SiteEventsListView();
-  #emptyEventsListComponent = new SiteListEmptyView();
+  #emptyEventsListComponent = null;
   #eventPresenter = new Map();
   #currentSortType = SortType.DAY;
   #filterModel = null;
+  #filterType = FilterType.EVERYTHING;
 
   constructor(container, pointsModel, filterModel) {
     this.#eventContainer = container;
@@ -27,9 +28,9 @@ export default class EventsBoardPresenter {
   }
 
   get points() {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    const filteredTasks = filter[filterType](points);
+    const filteredTasks = filter[this.#filterType](points);
     switch (this.#currentSortType) {
       case SortType.TIME:
         return filteredTasks.sort(sortByTime);
@@ -96,6 +97,7 @@ export default class EventsBoardPresenter {
   }
 
   #renderEmptyEventList = () => {
+    this.#emptyEventsListComponent = new SiteListEmptyView(this.#filterType);
     render(this.#eventContainer, this.#emptyEventsListComponent, RenderPosition.BEFOREEND);
   }
 
@@ -104,7 +106,11 @@ export default class EventsBoardPresenter {
     this.#eventPresenter.clear();
 
     remove(this.#sortComponent);
-    remove(this.#emptyEventsListComponent);
+
+    if (this.#emptyEventsListComponent) {
+      remove(this.#emptyEventsListComponent);
+    }
+
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
     }

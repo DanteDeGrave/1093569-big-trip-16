@@ -1,21 +1,26 @@
 import AbstractView from './abstract-view';
+import{FilterType} from '../const';
 
-const defaultMessage = 'Click New Event to create your first point';
+const emptySiteListMessageType = {
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.FUTURE]: 'There are no past events now future',
+  [FilterType.PAST]: 'There are no past events now past',
+};
 
-const createSiteListEmpty = () =>
+const createSiteListEmpty = (filterType) =>
   `
-    <p class="trip-events__msg">Click New Event to create your first point</p>
+    <p class="trip-events__msg">${emptySiteListMessageType[filterType]}</p>
   `;
 
 export default class SiteListEmptyView extends AbstractView {
-  #message = null;
+  #filterType = null;
 
-  constructor(message = defaultMessage) {
+  constructor(filterType) {
     super();
-    this.#message = message;
+    this.#filterType = filterType;
   }
 
   get template() {
-    return createSiteListEmpty(this.#message);
+    return createSiteListEmpty(this.#filterType);
   }
 }
