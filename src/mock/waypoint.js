@@ -45,29 +45,28 @@ const getRandomDestinationInfo = (count) => {
   return arr;
 };
 
-const getGenerateOffer = (editOffer) => {
+const getGenerateOffer = () => {
   let id = 1;
   return () => ({
     id: id++,
     title:offerOptionTitles[getRandomIntNumber(0, offerOptionTitles.length - 1)],
     price: getRandomIntNumber(1, 100),
-    isChecked: editOffer? false : Boolean(getRandomIntNumber(0, 1)),
   });
 };
 
-const getRandomOffers = (editOffer) => Array.from({length: getRandomIntNumber(0, MAX_COUNT)}, getGenerateOffer(editOffer));
+const getRandomOffers = (maxCount, minCount = 0) => Array.from({length: getRandomIntNumber(minCount, maxCount)}, getGenerateOffer());
 
 const getRandomPictures = () => Array.from({length: getRandomIntNumber(MIN_COUNT, MAX_COUNT)}, () => `img/photos/${getRandomIntNumber(MIN_COUNT, MAX_COUNT)}.jpg`);
 
-const getDestinationsList = () => cities.map((element) => ({
+export const getDestinationsList = () => cities.map((element) => ({
   name: element,
-  destinationInfo: getRandomDestinationInfo(getRandomIntNumber(MIN_COUNT, MAX_COUNT)),
+  description: getRandomDestinationInfo(getRandomIntNumber(MIN_COUNT, MAX_COUNT)),
   pictures: getRandomPictures(),
 }));
 
 export const generateOffersList = () => wayPointTypes.map((element) => ({
   type: element,
-  offers: getRandomOffers(true),
+  offers: getRandomOffers(MAX_COUNT, MAX_COUNT),
 }));
 
 export const generateWaypoint = () => {
@@ -88,7 +87,7 @@ export const generateWaypoint = () => {
     type,
     offer: {
       type,
-      offers: getRandomOffers(),
+      offers: getRandomOffers(MAX_COUNT),
     },
     offersList: generateOffersList(),
     isFavorite: Boolean(getRandomIntNumber(0, 1)),

@@ -3,6 +3,8 @@ import AbstractObservable from './utils/abstract-observable';
 export default class PointsModel extends AbstractObservable {
   #apiService = null;
   #points = [];
+  #offers = [];
+  #destinations = [];
 
   constructor(apiService) {
     super();
@@ -11,14 +13,38 @@ export default class PointsModel extends AbstractObservable {
     this.#apiService.points.then((points) => {
       console.log(points.map(this.#adaptToClient));
     });
+
+    this.#apiService.destinations.then((destinations) => {
+      console.log(destinations);
+    });
+
+    this.#apiService.offers.then((offers) => {
+      console.log(offers);
+    });
   }
 
   set points(points) {
     this.#points = [...points];
   }
 
+  set offers(offers) {
+    this.#offers = [...offers];
+  }
+
+  set destinations(destinations) {
+    this.#destinations = [...destinations];
+  }
+
   get points() {
     return this.#points;
+  }
+
+  get offers() {
+    return this.#offers;
+  }
+
+  get destinations() {
+    return this.#destinations;
   }
 
   updatePoint = (updateType, update) => {

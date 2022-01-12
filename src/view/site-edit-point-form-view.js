@@ -38,7 +38,7 @@ const createEditPointFormTemplate = (point) => {
     }
     const offerItem = offer.offers.map((element) =>
       `<div class="event__offer-selector">
-         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${element.title.toLowerCase()}-1" type="checkbox" name="event-offer-luggage" ${element.isChecked ? 'checked' : ''}>
+         <input class="event__offer-checkbox  visually-hidden" id="event-offer-${element.title.toLowerCase()}-1" type="checkbox" name="event-offer-luggage">
            <label class="event__offer-label" for="event-offer-${element.title.toLowerCase()}-1">
              <span class="event__offer-title">${element.title}</span>
              &plus;&euro;&nbsp;
